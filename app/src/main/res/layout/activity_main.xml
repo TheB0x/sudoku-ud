@@ -1,7 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-</LinearLayout>
+    <com.componentes.sudoku.view.BoardView
+            android:id="@+id/BoardView"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+
+            app:layout_constraintBottom_toTopOf="@+id/buttonsLayout"
+            app:layout_constraintTop_toTopOf="parent"
+            android:padding="2dp"
+
+    />
+
+    <GridLayout
+            android:id="@+id/buttonsLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rowCount="3"
+            android:columnCount="3"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/BoardView"
+    >
+        <Button
+                android:id="@+id/OneBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:layout_row="0"
+                android:layout_column="0"
+                android:padding="20dp"
+        />
+        <Button
+                android:id="@+id/TwoBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2"
+                android:layout_row="0"
+                android:layout_column="1"
+                android:padding="20dp"
+        />
+        <Button
+                android:id="@+id/ThreeBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3"
+                android:layout_row="0"
+                android:layout_column="2"
+                android:padding="20dp"
+        />
+        <Button
+                android:id="@+id/FourBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4"
+                android:layout_row="1"
+                android:layout_column="0"
+                android:padding="20dp"
+        />
+        <Button
+                android:id="@+id/FiveBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5"
+                android:layout_row="1"
+                android:layout_column="1"
+                android:padding="20dp"
+        />
+        <Button
+                android:id="@+id/SixBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="6"
+                android:layout_row="1"
+                android:layout_column="2"
+                android:padding="20dp"
+        />
+        <Button
+                android:id="@+id/SevenBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="7"
+                android:layout_row="2"
+                android:layout_column="0"
+                android:padding="20dp"
+        />
+        <Button
+                android:id="@+id/EightBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="8"
+                android:layout_row="2"
+                android:layout_column="1"
+                android:padding="20dp"
+        />
+        <Button
+                android:id="@+id/NineBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="9"
+                android:layout_row="2"
+                android:layout_column="2"
+                android:padding="20dp"
+        />
+
+    </GridLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
