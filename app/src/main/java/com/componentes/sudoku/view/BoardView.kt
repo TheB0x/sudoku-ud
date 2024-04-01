@@ -6,7 +6,9 @@ import android.util.AttributeSet
 import android.view.View
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Rect
 import android.view.MotionEvent
+import com.componentes.sudoku.model.Cell
 import kotlin.math.min
 
 class BoardView(context: Context, attributeSet: AttributeSet) : View(context, attributeSet) {
@@ -20,6 +22,8 @@ class BoardView(context: Context, attributeSet: AttributeSet) : View(context, at
     // -1 at start don't show in screen
     private var selectedRow    = -1
     private var selectedColumn = -1
+
+    private var cells: List<Cell>? = null
 
     private var listener:BoardView.OnTouchListener? = null
 
@@ -46,6 +50,12 @@ class BoardView(context: Context, attributeSet: AttributeSet) : View(context, at
         style = Paint.Style.FILL_AND_STROKE
         color = Color.parseColor("#D3ECC7")
     }
+
+    private val textPaint = Paint().apply {
+        style = Paint.Style.FILL_AND_STROKE
+        color = Color.BLACK
+        textSize = 24F
+    }
     // On functions
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
@@ -58,6 +68,7 @@ class BoardView(context: Context, attributeSet: AttributeSet) : View(context, at
         cellSizePixels = (width/size).toFloat()
         paintingCells(canvas)
         drawLines(canvas)
+        drawText(canvas)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -79,23 +90,23 @@ class BoardView(context: Context, attributeSet: AttributeSet) : View(context, at
 
     // painting cells functions
     private fun paintingCells(canvas: Canvas){
-        if (selectedColumn == -1 || selectedRow == -1) return
 
-        for (rows in 0..size){
-            for (columns in 0..size){
-                if (rows == selectedRow && columns == selectedColumn){
-                    // selected one
-                    fillCell(canvas, rows, columns, selectedCellPaint)
+        cells?.forEach{
+            val rows = it.row
+            val columns = it.col
 
-                } else if (rows == selectedRow || columns == selectedColumn){
-                    // rows 'n' columns aligned
-                    fillCell(canvas, rows, columns, conflictingCellPaint)
+            if (rows == selectedRow && columns == selectedColumn){
+                // selected one
+                fillCell(canvas, rows, columns, selectedCellPaint)
 
-                } else if (rows / size3x3 == selectedRow / size3x3
-                                && columns / size3x3 == selectedColumn / size3x3){
-                    // square 3x3 where is selected
-                    fillCell(canvas, rows, columns, conflictingCellPaint)
-                }
+            } else if (rows == selectedRow || columns == selectedColumn){
+                // rows 'n' columns aligned
+                fillCell(canvas, rows, columns, conflictingCellPaint)
+
+            } else if (rows / size3x3 == selectedRow / size3x3
+                && columns / size3x3 == selectedColumn / size3x3){
+                // square 3x3 where is selected
+                fillCell(canvas, rows, columns, conflictingCellPaint)
             }
         }
     }
@@ -152,4 +163,30 @@ class BoardView(context: Context, attributeSet: AttributeSet) : View(context, at
     interface OnTouchListener {
         fun onCellTouched(row: Int, column: Int)
     }
+
+    fun updateCells(cells: List<Cell>){
+        this.cells = cells
+        invalidate()
+    }
+
+    private fun drawText(canvas:Canvas){
+        cells?.forEach{
+            val row = it.row
+            val col = it.col
+
+            val valuesString = it.value.toString()
+            val textBounds = Rect()
+            textPaint.getTextBounds(valuesString,0,valuesString.length,textBounds)
+            val textWith = textPaint.measureText(valuesString)
+            val textHeight = textBounds.height()
+            canvas.drawText(
+                valuesString,
+                ((col*cellSizePixels)+cellSizePixels/2-textWith/2),
+                ((row*cellSizePixels)+cellSizePixels/2-textHeight/2),
+                textPaint
+            )
+        }
+    }
+
+
 }
