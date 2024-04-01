@@ -7,6 +7,7 @@ import android.view.View
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
+import android.graphics.Typeface
 import android.view.MotionEvent
 import com.componentes.sudoku.model.Cell
 import kotlin.math.min
@@ -56,12 +57,25 @@ class BoardView(context: Context, attributeSet: AttributeSet) : View(context, at
         color = Color.BLACK
         textSize = 24F
     }
+
+    private val statingCellTextPaint = Paint().apply {
+        style = Paint.Style.FILL_AND_STROKE
+        color = Color.BLACK
+        textSize = 32F
+        typeface = Typeface.DEFAULT_BOLD
+    }
+
+    private val startingCellPaint = Paint().apply {
+        style = Paint.Style.FILL_AND_STROKE
+        color = Color.parseColor("#acacac")
+    }
     // On functions
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         val sizePixels = min(widthMeasureSpec, heightMeasureSpec)
         setMeasuredDimension(sizePixels, sizePixels)
     }
+
 
     // size divide 'tween 9 so it creates 9x9
     override fun onDraw(canvas: Canvas) {
@@ -70,6 +84,8 @@ class BoardView(context: Context, attributeSet: AttributeSet) : View(context, at
         drawLines(canvas)
         drawText(canvas)
     }
+
+
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         return when(event.action){
@@ -95,7 +111,10 @@ class BoardView(context: Context, attributeSet: AttributeSet) : View(context, at
             val rows = it.row
             val columns = it.col
 
-            if (rows == selectedRow && columns == selectedColumn){
+            if(it.isStartingCell){
+                // starting selected sub-square
+                fillCell(canvas, rows, columns, startingCellPaint)
+            }else if (rows == selectedRow && columns == selectedColumn){
                 // selected one
                 fillCell(canvas, rows, columns, selectedCellPaint)
 
@@ -176,14 +195,16 @@ class BoardView(context: Context, attributeSet: AttributeSet) : View(context, at
 
             val valuesString = it.value.toString()
             val textBounds = Rect()
-            textPaint.getTextBounds(valuesString,0,valuesString.length,textBounds)
-            val textWith = textPaint.measureText(valuesString)
+            val paintToUse = if(it.isStartingCell) statingCellTextPaint else textPaint
+
+            paintToUse.getTextBounds(valuesString,0,valuesString.length,textBounds)
+            val textWith = paintToUse.measureText(valuesString)
             val textHeight = textBounds.height()
             canvas.drawText(
                 valuesString,
                 ((col*cellSizePixels)+cellSizePixels/2-textWith/2),
                 ((row*cellSizePixels)+cellSizePixels/2-textHeight/2),
-                textPaint
+                paintToUse
             )
         }
     }
