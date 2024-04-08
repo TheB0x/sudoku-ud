@@ -169,6 +169,8 @@ class SudokuModel {
     }
 
     fun generateAndSetNewBoard(level:Difficulty){
+        // Cada ve que inicia un nuevo board, reinicia el contador
+        intentos=0
         val newBoard = SudokuUtils.generateRandomSudokuBoard(level)
         val cells = mutableListOf<Cell>()
 

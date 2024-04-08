@@ -1,5 +1,7 @@
 package com.componentes.sudoku.view
 
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -13,12 +15,10 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.componentes.sudoku.R
 import com.componentes.sudoku.databinding.ActivityMainBinding
-import com.componentes.sudoku.model.Board
 import com.componentes.sudoku.model.Cell
 import com.componentes.sudoku.model.Difficulty
 import com.componentes.sudoku.viewmodel.PlaySudokuViewModel
@@ -102,12 +102,42 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
             actualizarContadorErrores(intentos)
         })
     }
+    fun showWinnerDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("¡Felicidades!")
+            .setMessage("¡Has ganado la partida!")
+            .setPositiveButton("OK") { _, _ ->
+                // Aquí puedes reiniciar el juego o realizar cualquier otra acción
+            }
+            .setCancelable(false) // Evita que el usuario cierre el diálogo al tocar fuera de él
+
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+
+    private fun showGameOverDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("¡Perdiste!")
+        builder.setMessage("Has superado los 5 intentos. ¿Quieres reiniciar el juego?")
+
+        builder.setPositiveButton("Seguir") { _,_ ->
+            // Reiniciar el juego
+            viewModel.sudokuModel.generateAndSetNewBoard(Difficulty.FACIL)
+        }
+        builder.setCancelable(false)
+        builder.show()
+    }
+
 
     /*
     Tiene la finalidad de actualizar el TextView
      */
     private fun actualizarContadorErrores(intentos: Int) {
-        txtIntentos.text = "  $intentos/5"
+        txtIntentos.text = "${intentos}/5"
+        if (intentos >= 5) {
+            showGameOverDialog()
+        }
     }
 
     /*
