@@ -1,6 +1,7 @@
 package com.componentes.sudoku.model
 
 import androidx.lifecycle.MutableLiveData
+import kotlin.random.Random
 
 class SudokuModel {
     var selectedCellLiveData = MutableLiveData<Pair<Int, Int>>()
@@ -13,9 +14,11 @@ class SudokuModel {
     private var isTakingNotes = false
 
 
-    private val board: Board
+    private var board: Board
 
     init {
+        // Generar y resolver el tablero solo una vez al inicio de la aplicación
+        //generateAndSolveBoard()
         selectedCellLiveData.postValue(Pair(selectedRow, selectedColumn))
         val cells = List(9*9){
             i -> Cell(
@@ -24,16 +27,18 @@ class SudokuModel {
                 i%9
             )
         }
+
         /*
         cells[11].isStartingCell = true
         cells[21].isStartingCell = true
         */
-        cells[0].notes = mutableSetOf(1,2,3,4,5,6,7,8,9)
+        //cells[0].notes = mutableSetOf(1,2,3,4,5,6,7,8,9)
         board = Board(9, cells)
         isTakingNotesLiveData.postValue(isTakingNotes)
 
         selectedCellLiveData.postValue(Pair(selectedColumn,selectedRow))
         cellsliveData.postValue(board.cells)
+
     }
 
     fun handleInput(number:Int){
@@ -75,7 +80,7 @@ class SudokuModel {
         val curNote = if(isTakingNotes){
             board.getCell(selectedRow,selectedColumn).notes
         }else{
-            setOf<Int>()
+            setOf()
         }
         highlightedKeysLiveData.postValue(curNote)
 
@@ -83,6 +88,7 @@ class SudokuModel {
 
 
     fun delete(){
+        /*
         val cell = board.getCell(selectedRow, selectedColumn)
         if(isTakingNotes){
             cell.notes.clear()
@@ -91,5 +97,30 @@ class SudokuModel {
             cell.value = 0
         }
         cellsliveData.postValue(board.cells)
+        */
+        val cell = board.getCell(selectedRow, selectedColumn)
+        if (cell.isStartingCell) {
+            // No permitir borrar números en celdas iniciales
+            return
+        }
+
+        if (isTakingNotes) {
+            cell.notes.clear()
+            highlightedKeysLiveData.postValue(setOf())
+        } else {
+            cell.value = 0
+        }
+        cellsliveData.postValue(board.cells)
+
     }
+
+    fun generateAndSolveBoard(){
+        val board = Board(9, List(9 * 9) { i -> Cell(i / 9, i % 9, 0) })
+        // Lógica para generar un tablero resuelto
+        val solver = SudokuSolver(board)
+        this.board = solver.solve()
+        // Actualizar el LiveData con el tablero resuelto
+        cellsliveData.postValue(board.cells)
+    }
+
 }

@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.componentes.sudoku.R
 import com.componentes.sudoku.databinding.ActivityMainBinding
+import com.componentes.sudoku.model.Board
 import com.componentes.sudoku.model.Cell
 import com.componentes.sudoku.viewmodel.PlaySudokuViewModel
 
@@ -38,6 +39,7 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         oneButton = findViewById(R.id.OneBtn)
         twoButton = findViewById(R.id.TwoBtn)
         threeButton = findViewById(R.id.ThreeBtn)
@@ -53,6 +55,7 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
         binding.BoardView.registerListener(this)
 
         viewModel = ViewModelProvider(this)[PlaySudokuViewModel::class.java]
+        viewModel.sudokuModel.generateAndSolveBoard()
         viewModel.sudokuModel.selectedCellLiveData.observe(this, Observer {updateSelecteCellUI(it)})
         viewModel.sudokuModel.cellsliveData.observe(this,Observer{updateCells(it)})
         viewModel.sudokuModel.isTakingNotesLiveData.observe(this,Observer{ updateNoteTakingUI(it) } )
@@ -75,8 +78,10 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
                 viewModel.sudokuModel.handleInput(index+1)
             }
         }
-        notesButton.setOnClickListener { viewModel.sudokuModel.changeNoteTakingState() }
+        //notesButton.setOnClickListener { viewModel.sudokuModel.changeNoteTakingState() }
         deleteButton.setOnClickListener{ viewModel.sudokuModel.delete() }
+
+
     }
 
     override fun onCellTouched(row: Int, column: Int) {

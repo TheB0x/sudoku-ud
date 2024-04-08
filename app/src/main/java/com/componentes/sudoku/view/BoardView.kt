@@ -251,6 +251,4 @@ class BoardView(context: Context, attributeSet: AttributeSet) : View(context, at
             }
         }
     }
-
-
 }
