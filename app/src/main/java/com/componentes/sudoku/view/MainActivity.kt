@@ -23,7 +23,6 @@ import com.componentes.sudoku.model.Cell
 import com.componentes.sudoku.model.Difficulty
 import com.componentes.sudoku.viewmodel.PlaySudokuViewModel
 
-@Suppress("DEPRECATION")
 class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
 
     lateinit var oneButton : Button
@@ -42,8 +41,6 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
     private var LEVEL = Difficulty.FACIL
     private var ATTEMPS_LIMIT = 5
     private var ATTEMPS = 0
-
-
 
 
     private lateinit var binding: ActivityMainBinding
@@ -93,10 +90,10 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
         numberButtons.forEachIndexed { index, button ->
             button.setOnClickListener{
                 viewModel.sudokuModel.handleInput(index+1)
+                // Validación de si ha ganado el juego por cada acción de un boton numérico
                 val status = viewModel.sudokuModel.isBoardComplete(viewModel.sudokuModel.board.cells)
                 if (ATTEMPS < ATTEMPS_LIMIT && status) {
                     showWinnerDialog()
-                    //Toast.makeText(this,"Ha ganado - ${intentos} and $status",Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -113,6 +110,9 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
             validateGameStatus(intentos)
         })
     }
+    /*
+    Se configura y muestra el cuadro de dialogo de Partida Ganada
+     */
     fun showWinnerDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("¡Felicidades!")
@@ -125,6 +125,9 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
         dialog.show()
     }
 
+    /*
+    Se configura y muestra el cuadro de dialogo de Partida Perdida
+     */
 
     private fun showGameOverDialog() {
         val builder = AlertDialog.Builder(this)
@@ -159,7 +162,9 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
     }
 
     /*
-    Esta función habilita que cuando
+
+    /*
+    Esta función hace que vibre el celular cuando una no es correcto el número
      */
     private fun vibrateDevice() {
         val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
@@ -170,8 +175,10 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
             vibrator.vibrate(100)
         }
     }
+
+
     fun onNumberButtonClicked(view: View) {
-        // Aquí obtienes el número seleccionado por el usuario
+        // Aquí obtiene el número seleccionado por el usuario
         val number = view.tag.toString().toInt()
 
         // Llamar a la función en SudokuModel para procesar el número seleccionado
@@ -179,11 +186,11 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
 
         // Verificar si el movimiento es correcto o no
         if (!isCorrectMove) {
-            // El movimiento es incorrecto, vibrar el dispositivo y cambiar el color del tablero
             vibrateDevice()
-            //changeBoardColor()
         }
     }
+
+     */
 
     override fun onCellTouched(row: Int, column: Int) {
         viewModel.sudokuModel.updateSelectedCell(row, column)

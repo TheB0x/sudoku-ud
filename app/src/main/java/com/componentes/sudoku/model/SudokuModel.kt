@@ -1,6 +1,5 @@
 package com.componentes.sudoku.model
 
-import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
 
 class SudokuModel {
@@ -90,7 +89,6 @@ class SudokuModel {
         }
         // Incrementar la cantidad de intentos si hay un error
         if (isError) { intentos++ }
-        // Si el número no está presente en la fila, columna ni subcuadrado 3x3, permitir el movimiento
         return !isError
     }
 
