@@ -21,7 +21,7 @@ class SudokuModel {
     private var selectedRow = -1
     private var selectedColumn = -1
     private var isTakingNotes = false
-    private lateinit var board: Board
+    lateinit var board: Board
 
     /*
     init {
@@ -152,6 +152,17 @@ class SudokuModel {
     }
     */
 
+    /*
+    Esta función permite verificar si el ablero tiene celdas vacíos
+     */
+    fun isBoardComplete(cells: List<Cell>): Boolean {
+        for (cell in cells) {
+            if (cell.value == 0) {
+                return false // Si alguna celda está vacía, el tablero no está completo
+            }
+        }
+        return true
+    }
 
     fun delete(){
         val cell = board.getCell(selectedRow, selectedColumn)

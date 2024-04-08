@@ -16,13 +16,12 @@ object SudokuUtils {
                 }
             }
         }
-
         // Resolver el tablero
         solveSudoku(board)
 
         // Determinar la cantidad de valores a eliminar según la dificultad
         val cellsToRemove = when (difficulty) {
-            Difficulty.FACIL -> 18
+            Difficulty.FACIL -> 2
             Difficulty.MEDIO -> 45
             Difficulty.DIFICIL -> 63
         }

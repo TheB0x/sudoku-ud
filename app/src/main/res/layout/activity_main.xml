@@ -10,6 +10,7 @@
             android:id="@+id/BoardView"
             android:layout_width="match_parent"
             android:layout_height="500dp"
+        android:layout_margin="13dp"
             app:layout_constraintBottom_toTopOf="@+id/buttonsLayout"
             app:layout_constraintTop_toTopOf="parent"
             android:padding="2dp"

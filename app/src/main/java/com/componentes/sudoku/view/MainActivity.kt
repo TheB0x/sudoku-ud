@@ -1,6 +1,5 @@
 package com.componentes.sudoku.view
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Color
@@ -13,6 +12,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -38,6 +38,12 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
     //lateinit var notesButton : ImageButton
     lateinit var deleteButton : ImageButton
     lateinit var txtIntentos : TextView
+
+    private var LEVEL = Difficulty.FACIL
+    private var ATTEMPS_LIMIT = 5
+    private var ATTEMPS = 0
+
+
 
 
     private lateinit var binding: ActivityMainBinding
@@ -65,7 +71,7 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
 
         viewModel = ViewModelProvider(this)[PlaySudokuViewModel::class.java]
         // Valida el nivel de dificultad
-        validateLevel(Difficulty.FACIL)
+        validateLevel(LEVEL)
 
         viewModel.sudokuModel.selectedCellLiveData.observe(this, Observer {updateSelecteCellUI(it)})
         viewModel.sudokuModel.cellsliveData.observe(this,Observer{updateCells(it)})
@@ -87,6 +93,11 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
         numberButtons.forEachIndexed { index, button ->
             button.setOnClickListener{
                 viewModel.sudokuModel.handleInput(index+1)
+                val status = viewModel.sudokuModel.isBoardComplete(viewModel.sudokuModel.board.cells)
+                if (ATTEMPS < ATTEMPS_LIMIT && status) {
+                    showWinnerDialog()
+                    //Toast.makeText(this,"Ha ganado - ${intentos} and $status",Toast.LENGTH_SHORT).show()
+                }
             }
 
         }
@@ -99,7 +110,7 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
         sudokuViewModel
          */
         viewModel.sudokuModel.intentosLiveData.observe(this, Observer { intentos ->
-            actualizarContadorErrores(intentos)
+            validateGameStatus(intentos)
         })
     }
     fun showWinnerDialog() {
@@ -107,10 +118,9 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
         builder.setTitle("¡Felicidades!")
             .setMessage("¡Has ganado la partida!")
             .setPositiveButton("OK") { _, _ ->
-                // Aquí puedes reiniciar el juego o realizar cualquier otra acción
+                viewModel.sudokuModel.generateAndSetNewBoard(LEVEL)
             }
             .setCancelable(false) // Evita que el usuario cierre el diálogo al tocar fuera de él
-
         val dialog = builder.create()
         dialog.show()
     }
@@ -123,7 +133,7 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
 
         builder.setPositiveButton("Seguir") { _,_ ->
             // Reiniciar el juego
-            viewModel.sudokuModel.generateAndSetNewBoard(Difficulty.FACIL)
+            viewModel.sudokuModel.generateAndSetNewBoard(LEVEL)
         }
         builder.setCancelable(false)
         builder.show()
@@ -133,9 +143,10 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
     /*
     Tiene la finalidad de actualizar el TextView
      */
-    private fun actualizarContadorErrores(intentos: Int) {
-        txtIntentos.text = "${intentos}/5"
-        if (intentos >= 5) {
+    private fun validateGameStatus(intentos: Int) {
+        txtIntentos.text = "$intentos/$ATTEMPS_LIMIT"
+        ATTEMPS = intentos
+        if (intentos >= ATTEMPS_LIMIT) {
             showGameOverDialog()
         }
     }
