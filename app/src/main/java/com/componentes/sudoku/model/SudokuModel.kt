@@ -18,8 +18,27 @@ class SudokuModel {
 
     init {
         // Generar y resolver el tablero solo una vez al inicio de la aplicación
-        //generateAndSolveBoard()
-        selectedCellLiveData.postValue(Pair(selectedRow, selectedColumn))
+        //generateAndSetNewBoard()
+
+        val newBoard = SudokuUtils.generateRandomSudokuBoard()
+        val cells = mutableListOf<Cell>()
+
+        // Convertir la matriz de Int a una lista de celdas
+        for (rowIndex in newBoard.indices) {
+            for (colIndex in newBoard[rowIndex].indices) {
+                val value = newBoard[rowIndex][colIndex]
+                val cell = Cell(rowIndex, colIndex, value, value != 0)
+                cells.add(cell)
+            }
+        }
+
+        // Actualizar las celdas y notificar a los observadores
+        cellsliveData.postValue(cells)
+        board = Board(9, cells)
+
+
+        //selectedCellLiveData.postValue(Pair(selectedRow, selectedColumn))
+        /*
         val cells = List(9*9){
             i -> Cell(
                 i/9,
@@ -28,16 +47,15 @@ class SudokuModel {
             )
         }
 
-        /*
+
         cells[11].isStartingCell = true
         cells[21].isStartingCell = true
         */
         //cells[0].notes = mutableSetOf(1,2,3,4,5,6,7,8,9)
-        board = Board(9, cells)
-        isTakingNotesLiveData.postValue(isTakingNotes)
-
-        selectedCellLiveData.postValue(Pair(selectedColumn,selectedRow))
-        cellsliveData.postValue(board.cells)
+        //board = Board(9, cells)
+        //isTakingNotesLiveData.postValue(isTakingNotes)
+        //selectedCellLiveData.postValue(Pair(selectedColumn,selectedRow))
+        //cellsliveData.postValue(board.cells)
 
     }
 
@@ -114,13 +132,22 @@ class SudokuModel {
 
     }
 
-    fun generateAndSolveBoard(){
-        val board = Board(9, List(9 * 9) { i -> Cell(i / 9, i % 9, 0) })
-        // Lógica para generar un tablero resuelto
-        val solver = SudokuSolver(board)
-        this.board = solver.solve()
-        // Actualizar el LiveData con el tablero resuelto
-        cellsliveData.postValue(board.cells)
+    fun generateAndSetNewBoard(){
+        val newBoard = SudokuUtils.generateRandomSudokuBoard()
+        val cells = mutableListOf<Cell>()
+
+        // Convertir la matriz de Int a una lista de celdas
+        for (rowIndex in newBoard.indices) {
+            for (colIndex in newBoard[rowIndex].indices) {
+                val value = newBoard[rowIndex][colIndex]
+                val cell = Cell(rowIndex, colIndex, value, value != 0)
+                cells.add(cell)
+            }
+        }
+
+        // Actualizar las celdas y notificar a los observadores
+        cellsliveData.postValue(cells)
+        board = Board(9, cells)
     }
 
 }

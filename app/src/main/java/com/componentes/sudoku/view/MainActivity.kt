@@ -55,7 +55,6 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
         binding.BoardView.registerListener(this)
 
         viewModel = ViewModelProvider(this)[PlaySudokuViewModel::class.java]
-        viewModel.sudokuModel.generateAndSolveBoard()
         viewModel.sudokuModel.selectedCellLiveData.observe(this, Observer {updateSelecteCellUI(it)})
         viewModel.sudokuModel.cellsliveData.observe(this,Observer{updateCells(it)})
         viewModel.sudokuModel.isTakingNotesLiveData.observe(this,Observer{ updateNoteTakingUI(it) } )
