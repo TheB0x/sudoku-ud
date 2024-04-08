@@ -1,18 +1,26 @@
 package com.componentes.sudoku.view
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.componentes.sudoku.R
 import com.componentes.sudoku.databinding.ActivityMainBinding
 import com.componentes.sudoku.model.Board
 import com.componentes.sudoku.model.Cell
+import com.componentes.sudoku.model.Difficulty
 import com.componentes.sudoku.viewmodel.PlaySudokuViewModel
 
 @Suppress("DEPRECATION")
@@ -27,8 +35,9 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
     lateinit var sevenButton : Button
     lateinit var eightButton : Button
     lateinit var nineButton : Button
-    lateinit var notesButton : ImageButton
+    //lateinit var notesButton : ImageButton
     lateinit var deleteButton : ImageButton
+    lateinit var txtIntentos : TextView
 
 
     private lateinit var binding: ActivityMainBinding
@@ -39,7 +48,6 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         oneButton = findViewById(R.id.OneBtn)
         twoButton = findViewById(R.id.TwoBtn)
         threeButton = findViewById(R.id.ThreeBtn)
@@ -49,15 +57,19 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
         sevenButton = findViewById(R.id.SevenBtn)
         eightButton = findViewById(R.id.EightBtn)
         nineButton = findViewById(R.id.NineBtn)
-        notesButton = findViewById(R.id.notesButton)
+        //notesButton = findViewById(R.id.notesButton)
         deleteButton = findViewById(R.id.deleteButton)
+        txtIntentos = findViewById(R.id.txtIntentos)
 
         binding.BoardView.registerListener(this)
 
         viewModel = ViewModelProvider(this)[PlaySudokuViewModel::class.java]
+        // Valida el nivel de dificultad
+        validateLevel(Difficulty.FACIL)
+
         viewModel.sudokuModel.selectedCellLiveData.observe(this, Observer {updateSelecteCellUI(it)})
         viewModel.sudokuModel.cellsliveData.observe(this,Observer{updateCells(it)})
-        viewModel.sudokuModel.isTakingNotesLiveData.observe(this,Observer{ updateNoteTakingUI(it) } )
+        //viewModel.sudokuModel.isTakingNotesLiveData.observe(this,Observer{ updateNoteTakingUI(it) } )
         viewModel.sudokuModel.highlightedKeysLiveData.observe(this,Observer{ updateHighlightedKeys(it) } )
 
         numberButtons = listOf(
@@ -76,11 +88,60 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
             button.setOnClickListener{
                 viewModel.sudokuModel.handleInput(index+1)
             }
+
         }
         //notesButton.setOnClickListener { viewModel.sudokuModel.changeNoteTakingState() }
         deleteButton.setOnClickListener{ viewModel.sudokuModel.delete() }
 
 
+        /*
+        El observer esta a la escucha de cualquier cambio en la variable de intentos del
+        sudokuViewModel
+         */
+        viewModel.sudokuModel.intentosLiveData.observe(this, Observer { intentos ->
+            actualizarContadorErrores(intentos)
+        })
+    }
+
+    /*
+    Tiene la finalidad de actualizar el TextView
+     */
+    private fun actualizarContadorErrores(intentos: Int) {
+        txtIntentos.text = "  $intentos/5"
+    }
+
+    /*
+    Esta función recibe el nivel de dificultad
+     */
+    private fun validateLevel(level:Difficulty){
+        viewModel.sudokuModel.generateAndSetNewBoard(level)
+    }
+
+    /*
+    Esta función habilita que cuando
+     */
+    private fun vibrateDevice() {
+        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            @Suppress("DEPRECATION")
+            vibrator.vibrate(100)
+        }
+    }
+    fun onNumberButtonClicked(view: View) {
+        // Aquí obtienes el número seleccionado por el usuario
+        val number = view.tag.toString().toInt()
+
+        // Llamar a la función en SudokuModel para procesar el número seleccionado
+        val isCorrectMove = viewModel.sudokuModel.handleInput(number)
+
+        // Verificar si el movimiento es correcto o no
+        if (!isCorrectMove) {
+            // El movimiento es incorrecto, vibrar el dispositivo y cambiar el color del tablero
+            vibrateDevice()
+            //changeBoardColor()
+        }
     }
 
     override fun onCellTouched(row: Int, column: Int) {
@@ -95,18 +156,17 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
         binding.BoardView.updateCells(cells)
     }
 
+    /*
     private fun updateNoteTakingUI(isNoteTaking: Boolean?) = isNoteTaking?.let {
         val color = if (it) ContextCompat.getColor(this, R.color.purple_700) else Color.LTGRAY
         notesButton.background.setColorFilter(color, PorterDuff.Mode.MULTIPLY)
-        /*
         if (it){
             notesButton.setBackgroundColor(ContextCompat.getColor(this,R.color.purple_700))
         }else{
             notesButton.setBackgroundColor(Color.LTGRAY)
         }
-
-         */
     }
+    */
 
     private fun updateHighlightedKeys(set:Set<Int>?) = set?.let {
         numberButtons.forEachIndexed { index, button ->

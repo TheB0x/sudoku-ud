@@ -10,7 +10,6 @@
             android:id="@+id/BoardView"
             android:layout_width="match_parent"
             android:layout_height="500dp"
-
             app:layout_constraintBottom_toTopOf="@+id/buttonsLayout"
             app:layout_constraintTop_toTopOf="parent"
             android:padding="2dp"
@@ -39,6 +38,8 @@
                 android:layout_row="0"
                 android:layout_column="0"
                 android:padding="20dp"
+            android:tag="1"
+            android:onClick="onNumberButtonClicked"
         />
         <Button
                 android:id="@+id/TwoBtn"
@@ -48,6 +49,8 @@
                 android:layout_row="0"
                 android:layout_column="1"
                 android:padding="20dp"
+            android:tag="2"
+            android:onClick="onNumberButtonClicked"
         />
         <Button
                 android:id="@+id/ThreeBtn"
@@ -57,6 +60,8 @@
                 android:layout_row="0"
                 android:layout_column="2"
                 android:padding="20dp"
+            android:tag="3"
+            android:onClick="onNumberButtonClicked"
         />
         <Button
                 android:id="@+id/FourBtn"
@@ -66,6 +71,8 @@
                 android:layout_row="1"
                 android:layout_column="0"
                 android:padding="20dp"
+            android:tag="4"
+            android:onClick="onNumberButtonClicked"
         />
         <Button
                 android:id="@+id/FiveBtn"
@@ -75,6 +82,8 @@
                 android:layout_row="1"
                 android:layout_column="1"
                 android:padding="20dp"
+            android:tag="5"
+            android:onClick="onNumberButtonClicked"
         />
         <Button
                 android:id="@+id/SixBtn"
@@ -84,6 +93,8 @@
                 android:layout_row="1"
                 android:layout_column="2"
                 android:padding="20dp"
+            android:tag="6"
+            android:onClick="onNumberButtonClicked"
         />
         <Button
                 android:id="@+id/SevenBtn"
@@ -93,6 +104,8 @@
                 android:layout_row="2"
                 android:layout_column="0"
                 android:padding="20dp"
+            android:tag="7"
+            android:onClick="onNumberButtonClicked"
         />
         <Button
                 android:id="@+id/EightBtn"
@@ -102,6 +115,8 @@
                 android:layout_row="2"
                 android:layout_column="1"
                 android:padding="20dp"
+            android:tag="8"
+            android:onClick="onNumberButtonClicked"
         />
         <Button
                 android:id="@+id/NineBtn"
@@ -111,8 +126,11 @@
                 android:layout_row="2"
                 android:layout_column="2"
                 android:padding="20dp"
+            android:tag="9"
+            android:onClick="onNumberButtonClicked"
         />
 
+        <!--
         <ImageButton
             android:id="@+id/notesButton"
             android:layout_width="88dp"
@@ -120,6 +138,29 @@
             android:layout_row="3"
             android:layout_column="0"
             android:src="@drawable/edit_pen_black" />
+        -->
+        <TextView
+            android:id="@+id/txtLabelIntentos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" Intentos:"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            android:layout_row="3"
+            android:layout_column="0"
+            />
+
+        <TextView
+            android:id="@+id/txtIntentos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_row="3"
+            android:layout_column="0"
+            android:layout_gravity="bottom"
+            android:text="0/5"
+            android:textSize="35dp"
+            />
+
 
         <ImageButton
             android:id="@+id/deleteButton"
@@ -127,7 +168,10 @@
             android:layout_height="wrap_content"
             android:layout_row="3"
             android:layout_column="2"
+            android:padding="20dp"
             android:src="@drawable/delete_black" />
+
+
 
 
     </GridLayout>

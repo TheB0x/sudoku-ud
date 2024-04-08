@@ -1,5 +1,6 @@
 package com.componentes.sudoku.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.componentes.sudoku.model.SudokuModel
 

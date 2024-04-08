@@ -4,7 +4,7 @@ import kotlin.random.Random
 
 object SudokuUtils {
 
-    fun generateRandomSudokuBoard(): Array<IntArray> {
+    fun generateRandomSudokuBoard(difficulty: Difficulty): Array<IntArray> {
         val board = Array(9) { IntArray(9) }
 
         // Llenar la diagonal principal con números aleatorios del 1 al 9
@@ -20,10 +20,29 @@ object SudokuUtils {
         // Resolver el tablero
         solveSudoku(board)
 
-        // Remover algunos valores para hacerlo un Sudoku jugable
-        removeValues(board)
+        // Determinar la cantidad de valores a eliminar según la dificultad
+        val cellsToRemove = when (difficulty) {
+            Difficulty.FACIL -> 18
+            Difficulty.MEDIO -> 45
+            Difficulty.DIFICIL -> 63
+        }
+
+        // Remover valores para alcanzar la dificultad deseada
+        removeValues(board, cellsToRemove)
 
         return board
+    }
+
+    private fun removeValues(board: Array<IntArray>, cellsToRemove: Int) {
+        var removedCount = 0
+        while (removedCount < cellsToRemove) {
+            val row = Random.nextInt(9)
+            val col = Random.nextInt(9)
+            if (board[row][col] != 0) {
+                board[row][col] = 0
+                removedCount++
+            }
+        }
     }
 
     private fun solveSudoku(board: Array<IntArray>): Boolean {
@@ -54,27 +73,5 @@ object SudokuUtils {
             }
         }
         return true
-    }
-
-    private fun removeValues(board: Array<IntArray>) {
-        // Determinar la cantidad de valores a eliminar (aproximadamente)
-        val cellsToRemove = Random.nextInt(40, 55)
-
-        // Eliminar valores aleatorios
-        var removedCount = 0
-        while (removedCount < cellsToRemove) {
-            val row = Random.nextInt(9)
-            val col = Random.nextInt(9)
-            if (board[row][col] != 0) {
-                board[row][col] = 0
-                removedCount++
-            }
-        }
-    }
-
-    fun printBoard(board: Array<IntArray>) {
-        for (row in board) {
-            println(row.joinToString(" "))
-        }
     }
 }
