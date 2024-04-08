@@ -30,7 +30,7 @@ class SudokuModel {
 
     fun handleInput(number:Int){
         if(selectedRow == -1 || selectedColumn == -1) return
-        if(!board.getCell(selectedRow, selectedColumn).isStartingCell) return
+        if(board.getCell(selectedRow, selectedColumn).isStartingCell) return
 
         board.getCell(selectedRow,selectedColumn).value = number
         cellsliveData.postValue(board.cells)

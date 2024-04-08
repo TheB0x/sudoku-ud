@@ -68,4 +68,6 @@ dependencies {
     //implementation("android.arch.lifecycle:extensions:1.1.1")
     implementation("android.arch.lifecycle:viewmodel:1.1.1")
 
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
+
 }

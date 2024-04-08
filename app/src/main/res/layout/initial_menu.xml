@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/white">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Selecciona tu dificultad"
+            android:textSize="20dp"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/label_menu"
+            android:paddingTop="10dp"/>
+
+        <RadioGroup
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/difficult_selector"
+            android:layout_below="@+id/label_menu"
+            android:padding="7dp">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/rB_easy"
+                android:text="Facil"
+                android:paddingHorizontal="4dp"
+                android:layout_weight="1"/>
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/rB_medium"
+                android:text="Intermedia"
+                android:paddingHorizontal="4dp"
+                android:layout_weight="1"/>
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/rb_hard"
+                android:text="Dificil"
+                android:paddingHorizontal="4dp"
+                android:layout_weight="1"/>
+
+        </RadioGroup>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/difficult_selector"
+            android:id="@+id/btn_ok"
+            android:layout_centerHorizontal="true"
+            android:text="Aceptar"/>
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

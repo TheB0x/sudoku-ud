@@ -1,12 +1,16 @@
 package com.componentes.sudoku.view
 
+import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageView
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.componentes.sudoku.R
 import com.componentes.sudoku.databinding.ActivityMainBinding
+import com.componentes.sudoku.databinding.InitialMenuBinding
 import com.componentes.sudoku.model.Cell
 import com.componentes.sudoku.viewmodel.PlaySudokuViewModel
 
@@ -60,6 +64,16 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
             }
         }
 
+        binding.include.settingsIcon.setOnClickListener{
+            val builder = AlertDialog.Builder(this@MainActivity)
+            val view = layoutInflater.inflate(R.layout.initial_menu, null)
+
+            builder.setView(view)
+
+            builder.create().show()
+
+        }
+
     }
 
     override fun onCellTouched(row: Int, column: Int) {
@@ -73,4 +87,5 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
     fun updateCells(cells: List<Cell>?) = cells?.let{
         binding.BoardView.updateCells(cells)
     }
+
 }
