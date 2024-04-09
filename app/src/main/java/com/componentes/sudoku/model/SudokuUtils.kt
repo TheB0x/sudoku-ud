@@ -1,5 +1,10 @@
 package com.componentes.sudoku.model
 
+import android.media.AudioAttributes
+import android.media.SoundPool
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import com.componentes.sudoku.R
 import kotlin.random.Random
 
 object SudokuUtils {
@@ -23,7 +28,7 @@ object SudokuUtils {
         val cellsToRemove = when (difficulty) {
             Difficulty.FACIL -> 2
             Difficulty.MEDIO -> 45
-            Difficulty.DIFICIL -> 63
+            Difficulty.DIFICIL -> 64
         }
 
         // Remover valores para alcanzar la dificultad deseada
@@ -73,4 +78,6 @@ object SudokuUtils {
         }
         return true
     }
+
+
 }

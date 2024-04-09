@@ -1,6 +1,11 @@
 package com.componentes.sudoku.model
 
+import android.media.AudioAttributes
+import android.media.SoundPool
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.MutableLiveData
+import com.componentes.sudoku.R
 
 class SudokuModel {
     var selectedCellLiveData = MutableLiveData<Pair<Int, Int>>()
@@ -189,5 +194,7 @@ class SudokuModel {
         cellsliveData.postValue(cells)
         board = Board(9, cells)
     }
+
+
 
 }

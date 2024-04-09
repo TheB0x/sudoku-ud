@@ -1,32 +1,26 @@
 package com.componentes.sudoku.view
 
 import android.app.AlertDialog
-import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
-import android.os.Build
-import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.VibrationEffect
-import android.os.Vibrator
-import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
-import android.widget.ImageView
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import androidx.activity.ComponentActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.componentes.sudoku.R
 import com.componentes.sudoku.databinding.ActivityMainBinding
-import com.componentes.sudoku.databinding.InitialMenuBinding
 import com.componentes.sudoku.model.Cell
 import com.componentes.sudoku.model.Difficulty
 import com.componentes.sudoku.viewmodel.PlaySudokuViewModel
 
-class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
+class MainActivity : ComponentActivity(), BoardView.OnTouchListener, RadioGroup.OnCheckedChangeListener {
 
     lateinit var oneButton : Button
     lateinit var twoButton : Button
@@ -41,7 +35,18 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
     lateinit var deleteButton : ImageButton
     lateinit var txtIntentos : TextView
 
-    private var LEVEL = Difficulty.FACIL
+    lateinit var radMed : RadioButton
+    lateinit var radEasy : RadioButton
+    lateinit var radHard : RadioButton
+    lateinit var radGroup: RadioGroup
+
+    lateinit var menuButton: Button
+
+    lateinit var sound: MediaPlayer
+
+    //need to be dinamic!!!
+    lateinit var LEVEL : Difficulty
+
     private var ATTEMPS_LIMIT = 5
     private var ATTEMPS = 0
 
@@ -49,6 +54,9 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: PlaySudokuViewModel
     private lateinit var numberButtons : List<Button>
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -67,11 +75,19 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
         deleteButton = findViewById(R.id.deleteButton)
         txtIntentos = findViewById(R.id.txtIntentos)
 
+
+
+
+
         binding.BoardView.registerListener(this)
 
         viewModel = ViewModelProvider(this)[PlaySudokuViewModel::class.java]
-        // Valida el nivel de dificultad
-        validateLevel(LEVEL)
+        binding.include.settingsIcon.setOnClickListener{
+            menu()
+
+        }
+        menu()
+
 
         viewModel.sudokuModel.selectedCellLiveData.observe(this, Observer {updateSelecteCellUI(it)})
         viewModel.sudokuModel.cellsliveData.observe(this,Observer{updateCells(it)})
@@ -92,7 +108,10 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
 
         numberButtons.forEachIndexed { index, button ->
             button.setOnClickListener{
-                viewModel.sudokuModel.handleInput(index+1)
+                val sounded = viewModel.sudokuModel.handleInput(index+1)
+                if(sounded){
+                    makeSound(index+1)
+                }
                 // Validación de si ha ganado el juego por cada acción de un boton numérico
                 val status = viewModel.sudokuModel.isBoardComplete(viewModel.sudokuModel.board.cells)
                 if (ATTEMPS < ATTEMPS_LIMIT && status) {
@@ -102,7 +121,8 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
 
         }
         //notesButton.setOnClickListener { viewModel.sudokuModel.changeNoteTakingState() }
-        deleteButton.setOnClickListener{ viewModel.sudokuModel.delete() }
+        deleteButton.setOnClickListener{
+            viewModel.sudokuModel.delete() }
 
 
         /*
@@ -113,16 +133,36 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
             validateGameStatus(intentos)
         })
 
-        binding.include.settingsIcon.setOnClickListener{
-            val builder = AlertDialog.Builder(this@MainActivity)
-            val view = layoutInflater.inflate(R.layout.initial_menu, null)
 
-            builder.setView(view)
-
-            builder.create().show()
-
-        }
     }
+
+
+
+    fun menu(){
+        val builder = AlertDialog.Builder(this@MainActivity)
+        val view = layoutInflater.inflate(R.layout.initial_menu, null)
+
+        builder.setView(view)
+
+        val floatingMenu = builder.create()
+
+        floatingMenu.show()
+
+        radGroup = view.findViewById(R.id.difficult_selector)
+        radEasy = view.findViewById(R.id.rB_easy)
+        radMed = view.findViewById(R.id.rB_medium)
+        radHard = view.findViewById(R.id.rb_hard)
+        radGroup.setOnCheckedChangeListener(this)
+
+        menuButton = view.findViewById(R.id.btn_ok)
+        menuButton.setOnClickListener{
+            validateLevel(LEVEL)
+            floatingMenu.hide()
+        }
+
+    }
+
+
     /*
     Se configura y muestra el cuadro de dialogo de Partida Ganada
      */
@@ -131,7 +171,8 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
         builder.setTitle("¡Felicidades!")
             .setMessage("¡Has ganado la partida!")
             .setPositiveButton("OK") { _, _ ->
-                viewModel.sudokuModel.generateAndSetNewBoard(LEVEL)
+                menu()
+                //viewModel.sudokuModel.generateAndSetNewBoard(LEVEL)
             }
             .setCancelable(false) // Evita que el usuario cierre el diálogo al tocar fuera de él
         val dialog = builder.create()
@@ -151,7 +192,8 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
 
         builder.setPositiveButton("Seguir") { _,_ ->
             // Reiniciar el juego
-            viewModel.sudokuModel.generateAndSetNewBoard(LEVEL)
+            menu()
+            //viewModel.sudokuModel.generateAndSetNewBoard(LEVEL)
         }
         builder.setCancelable(false)
         builder.show()
@@ -166,6 +208,15 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
         ATTEMPS = intentos
         if (intentos >= ATTEMPS_LIMIT) {
             showGameOverDialog()
+        }
+    }
+
+    // radiobutton configuration
+    override fun onCheckedChanged(p0: RadioGroup?, idRadio: Int) {
+        when (idRadio){
+            radEasy?.id -> LEVEL = Difficulty.FACIL
+            radMed?.id -> LEVEL = Difficulty.MEDIO
+            radHard?.id -> LEVEL = Difficulty.DIFICIL
         }
     }
 
@@ -238,4 +289,58 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
             button.background.setColorFilter(color, PorterDuff.Mode.MULTIPLY)
         }
     }
+
+
+
+
+
+    //
+    //
+    //
+    fun makeSound(number: Int){
+
+        /*val sound1 = MediaPlayer.create(this, R.raw.uno,)
+        val sound2 = MediaPlayer.create(this, R.raw.dos,)
+        val sound3 = MediaPlayer.create(this, R.raw.tres,)
+        val sound4 = MediaPlayer.create(this, R.raw.cuatro,)
+        val sound5 = MediaPlayer.create(this, R.raw.cinco,)
+        val sound6 = MediaPlayer.create(this, R.raw.seis,)
+        val sound7 = MediaPlayer.create(this, R.raw.siete,)
+        val sound8 = MediaPlayer.create(this, R.raw.ocho,)
+        val sound9 = MediaPlayer.create(this, R.raw.nueve,)*/
+
+
+        when(number){
+            1 -> {
+                sound = MediaPlayer.create(this, R.raw.uno,)
+                sound.start()
+            }
+            2 -> {
+                sound = MediaPlayer.create(this, R.raw.dos,)
+                sound.start()            }
+            3 -> {
+                sound = MediaPlayer.create(this, R.raw.tres,)
+                sound.start()            }
+            4 -> {
+                sound = MediaPlayer.create(this, R.raw.cuatro,)
+                sound.start()            }
+            5 -> {
+                sound = MediaPlayer.create(this, R.raw.cinco,)
+                sound.start()            }
+            6 -> {
+                sound = MediaPlayer.create(this, R.raw.seis,)
+                sound.start()            }
+            7 -> {
+                sound = MediaPlayer.create(this, R.raw.siete,)
+                sound.start()            }
+            8 -> {
+                sound = MediaPlayer.create(this, R.raw.ocho,)
+                sound.start()            }
+            9 -> {
+                sound = MediaPlayer.create(this, R.raw.nueve,)
+                sound.start()            }
+        }
+
+    }
+
 }
