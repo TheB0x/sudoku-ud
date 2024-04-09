@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Build
+import android.content.Intent
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -13,12 +14,14 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import android.widget.ImageView
 import androidx.activity.ComponentActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.componentes.sudoku.R
 import com.componentes.sudoku.databinding.ActivityMainBinding
+import com.componentes.sudoku.databinding.InitialMenuBinding
 import com.componentes.sudoku.model.Cell
 import com.componentes.sudoku.model.Difficulty
 import com.componentes.sudoku.viewmodel.PlaySudokuViewModel
@@ -109,6 +112,16 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
         viewModel.sudokuModel.intentosLiveData.observe(this, Observer { intentos ->
             validateGameStatus(intentos)
         })
+
+        binding.include.settingsIcon.setOnClickListener{
+            val builder = AlertDialog.Builder(this@MainActivity)
+            val view = layoutInflater.inflate(R.layout.initial_menu, null)
+
+            builder.setView(view)
+
+            builder.create().show()
+
+        }
     }
     /*
     Se configura y muestra el cuadro de dialogo de Partida Ganada
@@ -124,6 +137,8 @@ class MainActivity : ComponentActivity(), BoardView.OnTouchListener {
         val dialog = builder.create()
         dialog.show()
     }
+
+
 
     /*
     Se configura y muestra el cuadro de dialogo de Partida Perdida

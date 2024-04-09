@@ -24,10 +24,7 @@ class SudokuModel {
 
     /*
     init {
-        // Generar y resolver el tablero solo una vez al inicio de la aplicación
-        generateAndSetNewBoard()
         selectedCellLiveData.postValue(Pair(selectedRow, selectedColumn))
-
         val cells = List(9*9){
             i -> Cell(
                 i/9,
@@ -35,16 +32,12 @@ class SudokuModel {
                 i%9
             )
         }
-
         cells[11].isStartingCell = true
         cells[21].isStartingCell = true
-
-        cells[0].notes = mutableSetOf(1,2,3,4,5,6,7,8,9)
         board = Board(9, cells)
-        isTakingNotesLiveData.postValue(isTakingNotes)
+
         selectedCellLiveData.postValue(Pair(selectedColumn,selectedRow))
         cellsliveData.postValue(board.cells)
-
     }
 
      */
