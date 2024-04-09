@@ -26,7 +26,7 @@ object SudokuUtils {
 
         // Determinar la cantidad de valores a eliminar según la dificultad
         val cellsToRemove = when (difficulty) {
-            Difficulty.FACIL -> 2
+            Difficulty.FACIL -> 12
             Difficulty.MEDIO -> 45
             Difficulty.DIFICIL -> 64
         }

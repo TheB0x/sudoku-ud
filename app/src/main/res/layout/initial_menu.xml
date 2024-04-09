@@ -3,60 +3,64 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:backgroundTint="@color/white">
+
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="288dp"
+        android:layout_height="230dp"
         android:layout_centerInParent="true">
 
         <TextView
+            android:id="@+id/label_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Selecciona tu dificultad"
-            android:textSize="20dp"
             android:layout_centerHorizontal="true"
-            android:id="@+id/label_menu"
-            android:paddingTop="10dp"/>
+            android:paddingTop="15dp"
+            android:text="Selecciona tu dificultad"
+            android:textSize="20dp" />
 
         <RadioGroup
+            android:id="@+id/difficult_selector"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:id="@+id/difficult_selector"
             android:layout_below="@+id/label_menu"
             android:padding="7dp">
 
             <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/rB_easy"
-                android:text="Facil"
-                android:paddingHorizontal="4dp"
-                android:layout_weight="1"/>
-
-            <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingHorizontal="4dp"
+                android:text="Fácil" />
+
+            <RadioButton
                 android:id="@+id/rB_medium"
-                android:text="Intermedia"
-                android:paddingHorizontal="4dp"
-                android:layout_weight="1"/>
-
-            <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/rb_hard"
-                android:text="Dificil"
+                android:layout_weight="1"
                 android:paddingHorizontal="4dp"
-                android:layout_weight="1"/>
+                android:text="Intermedio" />
+
+            <RadioButton
+                android:id="@+id/rb_hard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingHorizontal="4dp"
+                android:text="Dificil" />
 
         </RadioGroup>
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/difficult_selector"
             android:id="@+id/btn_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_below="@+id/difficult_selector"
+            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:text="Aceptar"/>
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="21dp"
+            android:text="Jugar" />
 
 
     </RelativeLayout>
